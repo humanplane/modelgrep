@@ -99,16 +99,20 @@ def extract_provider_details(endpoints_data):
             price_in = None
             price_out = None
 
+        lat = latency_data.get("p50")
+        tp = throughput_data.get("p50")
+        uptime = ep.get("uptime_last_30m")
+
         provider_details.append({
             "name": ep.get("provider_name", "Unknown"),
             "quantization": ep.get("quantization", "unknown"),
-            "context_length": ep.get("context_length", 0),
+            "context_length": ep.get("context_length") or 0,
             "max_completion": ep.get("max_completion_tokens"),
-            "latency": round(latency_data.get("p50", 0), 2) if latency_data.get("p50") else None,
-            "throughput": round(throughput_data.get("p50", 0), 2) if throughput_data.get("p50") else None,
+            "latency": round(lat, 2) if lat is not None else None,
+            "throughput": round(tp, 2) if tp is not None else None,
             "price_input": round(price_in, 4) if price_in is not None else None,
             "price_output": round(price_out, 4) if price_out is not None else None,
-            "uptime": round(ep.get("uptime_last_30m", 0), 1),
+            "uptime": round(uptime, 1) if uptime is not None else None,
         })
 
     return provider_details
