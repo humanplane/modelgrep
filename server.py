@@ -205,16 +205,19 @@ def enrich_model(model):
     }
 
 
-def fetch_all_data(progress_callback=None):
+def fetch_all_data():
     """Fetch and enrich all models"""
     print("Fetching models list...")
     models = get_all_models()
-    print(f"Found {len(models)} models, fetching endpoint data...")
+    total = len(models)
+    print(f"Found {total} models, fetching endpoint stats...")
 
     enriched = []
     completed = 0
+    start_time = time.time()
 
-    with ThreadPoolExecutor(max_workers=25) as executor:
+    # Use more workers for faster fetching
+    with ThreadPoolExecutor(max_workers=50) as executor:
         future_to_model = {
             executor.submit(enrich_model, m): m
             for m in models
@@ -225,12 +228,16 @@ def fetch_all_data(progress_callback=None):
                 result = future.result()
                 enriched.append(result)
                 completed += 1
-                if completed % 50 == 0:
-                    print(f"  Progress: {completed}/{len(models)}")
+                if completed % 25 == 0 or completed == total:
+                    elapsed = time.time() - start_time
+                    rate = completed / elapsed if elapsed > 0 else 0
+                    eta = (total - completed) / rate if rate > 0 else 0
+                    print(f"  Progress: {completed}/{total} ({rate:.1f}/s, ETA: {eta:.0f}s)")
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Error enriching model: {e}")
 
-    print(f"Enriched {len(enriched)} models")
+    elapsed = time.time() - start_time
+    print(f"Enriched {len(enriched)} models in {elapsed:.1f}s")
     return enriched
 
 
@@ -396,36 +403,67 @@ class APIHandler(SimpleHTTPRequestHandler):
         if os.path.exists(html_path):
             with open(html_path, 'rb') as f:
                 content = f.read()
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html")
-            self.send_header("Content-Length", len(content))
-            self.end_headers()
-            self.wfile.write(content)
+            try:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html")
+                self.send_header("Content-Length", str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+            except BrokenPipeError:
+                pass  # Client disconnected
         else:
             self.send_error(404)
 
     def send_json(self, data):
         content = json.dumps(data).encode()
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", len(content))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        self.wfile.write(content)
+        try:
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(content)
+        except BrokenPipeError:
+            pass  # Client disconnected
 
-    def log_message(self, format, *args):
+    def log_message(self, format, *args):  # noqa: A002
         if args and isinstance(args[0], str) and "/api/" in args[0]:
             print(f"[API] {args[0]}")
+
+
+def warmup_cache():
+    """Warm up cache on startup - load from file or fetch"""
+    global cached_models, cache_timestamp
+
+    # First try to load from file cache (fast startup)
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r') as f:
+                data = json.load(f)
+                cached_models = data.get("models", [])
+                cache_timestamp = data.get("timestamp", 0)
+                print(f"Loaded {len(cached_models)} models from disk cache")
+
+                # If cache is stale, refresh in background
+                if time.time() - cache_timestamp > CACHE_TTL:
+                    print("Cache is stale, refreshing in background...")
+                    threading.Thread(target=lambda: get_cached_models(force_refresh=True), daemon=True).start()
+                return
+        except Exception as e:
+            print(f"Cache load failed: {e}")
+
+    # No cache file - fetch synchronously on first startup
+    print("No cache found, fetching all model data (this may take a minute)...")
+    get_cached_models(force_refresh=True)
 
 
 def main():
     port = int(os.environ.get("PORT", 8765))
 
     print(f"Starting OpenRouter Explorer on http://localhost:{port}")
-    print("Loading initial model data...")
 
-    # Pre-fetch models in background
-    threading.Thread(target=get_cached_models, daemon=True).start()
+    # Warm up cache before accepting requests
+    warmup_cache()
 
     server = HTTPServer(("", port), APIHandler)
     print(f"Server ready at http://localhost:{port}")
