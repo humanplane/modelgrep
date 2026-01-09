@@ -14,6 +14,7 @@ import threading
 import time
 
 BASE_URL = "https://openrouter.ai/api/v1"
+FRONTEND_STATS_URL = "https://openrouter.ai/api/frontend/stats/endpoint"
 CACHE_FILE = "model_cache.json"
 CACHE_TTL = 300  # 5 minutes
 
@@ -38,6 +39,21 @@ def get_endpoints(model_id):
     except Exception:
         pass
     return None
+
+
+def get_frontend_stats(model_slug):
+    """Fetch frontend stats for a model (includes throughput/latency)"""
+    try:
+        resp = requests.get(
+            FRONTEND_STATS_URL,
+            params={"permaslug": model_slug, "variant": "standard"},
+            timeout=10
+        )
+        if resp.status_code == 200:
+            return resp.json().get("data", [])
+    except Exception:
+        pass
+    return []
 
 
 def extract_stats(model):
@@ -119,25 +135,67 @@ def extract_provider_details(endpoints_data):
 
 
 def enrich_model(model):
-    """Enrich a single model with endpoint data"""
-    endpoints = get_endpoints(model["id"])
-    model["endpoints"] = endpoints
+    """Enrich a single model with endpoint data from frontend stats API"""
+    model_id = model["id"]
 
-    stats = extract_stats(model)
+    # Use frontend stats API which has accurate throughput/latency
+    frontend_endpoints = get_frontend_stats(model_id)
+
+    # Extract stats and provider details from frontend data
+    best_throughput = 0
+    best_latency = float('inf')
+    providers = set()
+    provider_details = []
+
+    for ep in frontend_endpoints:
+        provider = ep.get("provider_name", "Unknown")
+        providers.add(provider)
+
+        stats = ep.get("stats") or {}
+        pricing = ep.get("pricing") or {}
+
+        tp = stats.get("p50_throughput") or 0
+        lat = stats.get("p50_latency")
+
+        if tp > best_throughput:
+            best_throughput = tp
+        if lat is not None and lat < best_latency:
+            best_latency = lat
+
+        # Extract pricing
+        try:
+            price_in = float(pricing.get("prompt", "0")) * 1_000_000
+            price_out = float(pricing.get("completion", "0")) * 1_000_000
+        except:
+            price_in = None
+            price_out = None
+
+        provider_details.append({
+            "name": provider,
+            "quantization": ep.get("quantization", "unknown"),
+            "context_length": ep.get("context_length") or 0,
+            "max_completion": ep.get("max_completion_tokens"),
+            "latency": round(lat, 2) if lat is not None else None,
+            "throughput": round(tp, 2) if tp > 0 else None,
+            "price_input": round(price_in, 4) if price_in is not None else None,
+            "price_output": round(price_out, 4) if price_out is not None else None,
+            "uptime": None,  # Not available in frontend API
+        })
+
+    # Get pricing from model data as fallback
     price = get_price(model)
     arch = model.get("architecture", {})
-    provider_details = extract_provider_details(endpoints)
 
     return {
-        "id": model["id"],
-        "name": model.get("name", model["id"]),
+        "id": model_id,
+        "name": model.get("name", model_id),
         "description": model.get("description", "")[:200],
         "context_length": model.get("context_length", 0),
-        "throughput": stats["throughput"],
-        "latency": stats["latency"],
+        "throughput": round(best_throughput, 2) if best_throughput > 0 else 0,
+        "latency": round(best_latency, 2) if best_latency != float('inf') else None,
         "price_input": price["input"],
         "price_output": price["output"],
-        "providers": stats["providers"],
+        "providers": list(providers),
         "provider_details": provider_details,
         "modality": arch.get("modality", "text->text"),
         "input_modalities": arch.get("input_modalities", ["text"]),
