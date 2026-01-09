@@ -564,12 +564,20 @@
       try {
         const [mr, sr] = await Promise.all([fetch('/api/models?limit=1000'), fetch('/api/stats')]);
         const md = await mr.json(), sd = await sr.json();
+
+        // If still loading, show loading state and retry
+        if (md.loading || sd.loading) {
+          $('#tbody').innerHTML = '<tr><td colspan="6"><div class="empty-state">Loading models... (first load takes ~30s)</div></td></tr>';
+          setTimeout(load, 2000);
+          return;
+        }
+
         models = md.models; maxCtx = sd.max_context || 200000;
         $('#stat-models').textContent = sd.total_models;
-        $('#stat-providers').textContent = sd.providers.length;
+        $('#stat-providers').textContent = sd.providers?.length || 0;
         $('#stat-live').textContent = sd.with_throughput;
         const sel = $('#f-prov');
-        sd.providers.sort().forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
+        (sd.providers || []).sort().forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
         filter();
       } catch(e) { $('#tbody').innerHTML = '<tr><td colspan="6"><div class="empty-state">Failed to load</div></td></tr>'; }
     }
