@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>modelgrep - Compare LLM Models by Speed, Latency & Price</title>
+  <meta name="description" content="Find the perfect LLM for your project. Compare throughput, latency, and pricing across 300+ models from 50+ providers including OpenAI, Anthropic, Google, and more.">
+  <meta name="keywords" content="LLM, AI models, GPT, Claude, Gemini, model comparison, API pricing, throughput, latency, OpenRouter">
+  <meta name="author" content="modelgrep">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="modelgrep - Compare LLM Models">
+  <meta property="og:description" content="Find the perfect LLM. Compare throughput, latency, and pricing across 300+ models.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://modelgrep.com">
+  <meta property="og:image" content="https://modelgrep.com/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="modelgrep - Compare LLM Models">
+  <meta name="twitter:description" content="Find the perfect LLM. Compare throughput, latency, and pricing across 300+ models.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c3aed'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>M</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c3aed'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>M</text></svg>">
+  <meta name="theme-color" content="#7c3aed">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://modelgrep.com">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0b;
+      color: #e4e4e7;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 200px;
+      background: #0f0f11;
+      border-right: 1px solid #1f1f23;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      padding: 0 8px;
+      margin-bottom: 24px;
+    }
+
+    .nav-section { margin-bottom: 20px; }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #52525b;
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 8px 10px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #a1a1aa;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+    }
+
+    .nav-btn:hover { background: #18181b; color: #e4e4e7; }
+    .nav-btn.active { background: #18181b; color: #fff; }
+
+    .nav-badge {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #52525b;
+    }
+
+    .sidebar-stats {
+      margin-top: auto;
+      background: #18181b;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .stat-row span:first-child { color: #71717a; }
+    .stat-row span:last-child {
+      font-family: 'JetBrains Mono', monospace;
+      color: #e4e4e7;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      margin-left: 200px;
+      padding: 20px 24px;
+    }
+
+    /* Header Controls */
+    .header {
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #52525b;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 40px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      padding: 0 12px 0 38px;
+      font-size: 14px;
+      color: #e4e4e7;
+      outline: none;
+    }
+
+    .search-input:focus { border-color: #3f3f46; }
+    .search-input::placeholder { color: #52525b; }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #a1a1aa;
+    }
+
+    .filter-chip input {
+      width: 45px;
+      background: none;
+      border: none;
+      color: #e4e4e7;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .filter-chip input::placeholder { color: #52525b; }
+
+    .filter-chip select {
+      background: none;
+      border: none;
+      color: #e4e4e7;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .toggle-btn {
+      height: 32px;
+      padding: 0 12px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #a1a1aa;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .toggle-btn:hover { background: #27272a; }
+    .toggle-btn.active { background: #7c3aed20; border-color: #7c3aed; color: #a78bfa; }
+
+    .clear-btn {
+      height: 32px;
+      padding: 0 12px;
+      background: none;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #71717a;
+      cursor: pointer;
+    }
+
+    .clear-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* Results Bar */
+    .results-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .results-count {
+      font-size: 13px;
+      color: #71717a;
+    }
+
+    .results-count strong { color: #e4e4e7; }
+
+    .sort-pills {
+      display: flex;
+      gap: 4px;
+      background: #18181b;
+      padding: 3px;
+      border-radius: 6px;
+    }
+
+    .sort-pill {
+      padding: 5px 10px;
+      background: none;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #71717a;
+      cursor: pointer;
+    }
+
+    .sort-pill:hover { color: #a1a1aa; }
+    .sort-pill.active { background: #27272a; color: #e4e4e7; }
+
+    /* Table */
+    .table-wrap {
+      background: #111113;
+      border: 1px solid #1f1f23;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #52525b;
+      background: #0f0f11;
+      border-bottom: 1px solid #1f1f23;
+    }
+
+    th.num { text-align: right; }
+
+    td {
+      padding: 10px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid #1a1a1d;
+    }
+
+    td.num {
+      text-align: right;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .model-row { cursor: pointer; transition: background 0.1s; }
+    .model-row:hover { background: #151517; }
+    .model-row.expanded { background: #151517; }
+    .model-row.no-expand { cursor: default; }
+
+    .model-info { display: flex; flex-direction: column; gap: 1px; }
+
+    .model-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .expand-icon {
+      color: #52525b;
+      font-size: 10px;
+      transition: transform 0.15s;
+    }
+
+    .model-row.expanded .expand-icon { transform: rotate(90deg); color: #a78bfa; }
+
+    .model-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #e4e4e7;
+      text-decoration: none;
+    }
+
+    .model-id:hover { color: #a78bfa; }
+
+    .tag {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 2px 5px;
+      border-radius: 3px;
+      background: #7c3aed20;
+      color: #a78bfa;
+    }
+
+    .provider-hint {
+      font-size: 11px;
+      color: #52525b;
+    }
+
+    .metric { font-weight: 500; }
+    .metric.fast { color: #22c55e; }
+    .metric.ok { color: #e4e4e7; }
+    .metric.slow { color: #eab308; }
+    .metric.bad { color: #ef4444; }
+    .metric.na { color: #3f3f46; }
+
+    .ctx-cell {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .ctx-bar {
+      width: 30px;
+      height: 4px;
+      background: #27272a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .ctx-fill { height: 100%; background: #7c3aed; border-radius: 2px; }
+
+    /* Provider Rows */
+    .provider-group { display: none; }
+    .provider-group.show { display: table-row-group; }
+
+    .prov-row { background: #0c0c0d; }
+    .prov-row:hover { background: #111113; }
+    .prov-row td:first-child { padding-left: 38px; }
+
+    .prov-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .prov-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #a1a1aa;
+    }
+
+    .quant {
+      font-size: 9px;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 2px 4px;
+      border-radius: 3px;
+      background: #eab30820;
+      color: #eab308;
+    }
+
+    /* Empty/Loading */
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #52525b;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      margin: 0 auto 10px;
+      border: 2px solid #27272a;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      padding: 10px 16px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      transition: all 0.2s;
+      z-index: 100;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 16px; }
+      .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">modelgrep</div>
+
+      <nav class="nav-section">
+        <div class="nav-label">Quick Filters</div>
+        <button class="nav-btn active" data-preset="all">All Models</button>
+        <button class="nav-btn" data-preset="fast">Fastest <span class="nav-badge">>200 t/s</span></button>
+        <button class="nav-btn" data-preset="cheap">Budget <span class="nav-badge">&lt;$1/M</span></button>
+        <button class="nav-btn" data-preset="free">Free Tier</button>
+        <button class="nav-btn" data-preset="vision">Vision</button>
+        <button class="nav-btn" data-preset="longctx">Long Context <span class="nav-badge">>100k</span></button>
+        <button class="nav-btn" data-preset="lowlat">Low Latency <span class="nav-badge">&lt;200ms</span></button>
+      </nav>
+
+      <div class="sidebar-stats">
+        <div class="stat-row"><span>Models</span><span id="stat-models">--</span></div>
+        <div class="stat-row"><span>Providers</span><span id="stat-providers">--</span></div>
+        <div class="stat-row"><span>Live metrics</span><span id="stat-live">--</span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="text" class="search-input" id="search" placeholder="Search models... (press /)">
+        </div>
+        <div class="filters">
+          <div class="filter-chip">
+            <span>Speed</span>
+            <input type="number" id="f-tp" placeholder="min">
+            <span>t/s</span>
+          </div>
+          <div class="filter-chip">
+            <span>Latency</span>
+            <input type="number" id="f-lat" placeholder="max">
+            <span>ms</span>
+          </div>
+          <div class="filter-chip">
+            <span>Input</span>
+            <input type="number" id="f-in" placeholder="max" step="0.1">
+            <span>$/M</span>
+          </div>
+          <div class="filter-chip">
+            <span>Output</span>
+            <input type="number" id="f-out" placeholder="max" step="0.1">
+            <span>$/M</span>
+          </div>
+          <div class="filter-chip">
+            <span>Context</span>
+            <input type="number" id="f-ctx" placeholder="min">
+            <span>k</span>
+          </div>
+          <button class="toggle-btn" id="t-free">Free</button>
+          <button class="toggle-btn" id="t-vision">Vision</button>
+          <div class="filter-chip">
+            <span>Provider</span>
+            <select id="f-prov"><option value="">All</option></select>
+          </div>
+          <button class="clear-btn" id="clear">Clear</button>
+        </div>
+      </div>
+
+      <div class="results-bar">
+        <div class="results-count"><strong id="count">0</strong> models</div>
+        <div class="sort-pills">
+          <button class="sort-pill active" data-sort="throughput">Speed</button>
+          <button class="sort-pill" data-sort="latency" data-asc="1">Latency</button>
+          <button class="sort-pill" data-sort="price_input" data-asc="1">Price</button>
+          <button class="sort-pill" data-sort="context_length">Context</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th class="num">Throughput</th>
+              <th class="num">Latency</th>
+              <th class="num hide-mobile">Input</th>
+              <th class="num hide-mobile">Output</th>
+              <th class="num">Context</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="6"><div class="empty-state"><div class="spinner"></div>Loading models...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let models = [], sort = 'throughput', sortAsc = false, maxCtx = 200000;
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+    async function load() {
+      try {
+        const [mr, sr] = await Promise.all([fetch('/api/models?limit=1000'), fetch('/api/stats')]);
+        const md = await mr.json(), sd = await sr.json();
+        models = md.models; maxCtx = sd.max_context || 200000;
+        $('#stat-models').textContent = sd.total_models;
+        $('#stat-providers').textContent = sd.providers.length;
+        $('#stat-live').textContent = sd.with_throughput;
+        const sel = $('#f-prov');
+        sd.providers.sort().forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
+        filter();
+      } catch(e) { $('#tbody').innerHTML = '<tr><td colspan="6"><div class="empty-state">Failed to load</div></td></tr>'; }
+    }
+
+    function getF() {
+      return {
+        q: $('#search').value.toLowerCase(),
+        tp: +$('#f-tp').value || 0,
+        lat: +$('#f-lat').value || Infinity,
+        pIn: +$('#f-in').value || Infinity,
+        pOut: +$('#f-out').value || Infinity,
+        ctx: (+$('#f-ctx').value || 0) * 1000,
+        free: $('#t-free').classList.contains('active'),
+        vision: $('#t-vision').classList.contains('active'),
+        prov: $('#f-prov').value.toLowerCase()
+      };
+    }
+
+    function filterProv(list, f) {
+      return list.filter(p => {
+        if ((p.throughput || 0) < f.tp) return false;
+        if (f.lat !== Infinity && (!p.latency || p.latency > f.lat)) return false;
+        if ((p.price_input || 0) > f.pIn) return false;
+        if ((p.price_output || 0) > f.pOut) return false;
+        if ((p.context_length || 0) < f.ctx) return false;
+        if (f.free && (p.price_input > 0 || p.price_output > 0)) return false;
+        return true;
+      });
+    }
+
+    function filter() {
+      const f = getF();
+      let list = models.filter(m => {
+        if (m.id.startsWith('openrouter/')) return false;
+        if (f.q && !m.id.toLowerCase().includes(f.q) && !m.name.toLowerCase().includes(f.q)) return false;
+        if ((m.throughput || 0) < f.tp) return false;
+        if (f.lat !== Infinity && (!m.latency || m.latency > f.lat)) return false;
+        if ((m.price_input || 0) > f.pIn) return false;
+        if ((m.price_output || 0) > f.pOut) return false;
+        if ((m.context_length || 0) < f.ctx) return false;
+        if (f.free && (m.price_input > 0 || m.price_output > 0)) return false;
+        if (f.vision && !m.modality.includes('image')) return false;
+        if (f.prov && !m.providers.some(p => p.toLowerCase().includes(f.prov))) return false;
+        return true;
+      });
+      list.sort((a, b) => {
+        let av = a[sort], bv = b[sort];
+        if (av == null) av = sortAsc ? Infinity : -Infinity;
+        if (bv == null) bv = sortAsc ? Infinity : -Infinity;
+        return sortAsc ? av - bv : bv - av;
+      });
+      render(list, f);
+    }
+
+    function mc(t, v) {
+      if (v == null || v <= 0) return 'na';
+      if (t === 'tp') return v >= 400 ? 'fast' : v >= 150 ? 'ok' : v >= 50 ? 'slow' : 'bad';
+      if (t === 'lat') return v <= 100 ? 'fast' : v <= 250 ? 'ok' : v <= 500 ? 'slow' : 'bad';
+      return 'ok';
+    }
+
+    function toggle(id, e) {
+      e.stopPropagation();
+      const row = $(`[data-id="${id}"]`), prov = $(`#p-${id}`);
+      if (row && prov) { row.classList.toggle('expanded'); prov.classList.toggle('show'); }
+    }
+
+    function renderProv(m, f) {
+      const list = filterProv(m.provider_details || [], f);
+      return list.map(p => {
+        const q = p.quantization, showQ = q && q !== 'unknown' && q !== 'bf16' && q !== 'fp16' && q !== 'fp32';
+        const ctxPct = Math.min(100, (p.context_length / maxCtx) * 100);
+        return `<tr class="prov-row">
+          <td><div class="prov-name"><span class="prov-label">${p.name}</span>${showQ ? `<span class="quant">${q}</span>` : ''}</div></td>
+          <td class="num"><span class="metric ${mc('tp', p.throughput)}">${p.throughput > 0 ? p.throughput.toFixed(1) : '--'}</span></td>
+          <td class="num"><span class="metric ${mc('lat', p.latency)}">${p.latency ? p.latency.toFixed(0) + 'ms' : '--'}</span></td>
+          <td class="num hide-mobile">${p.price_input != null ? '$' + p.price_input.toFixed(2) : '--'}</td>
+          <td class="num hide-mobile">${p.price_output != null ? '$' + p.price_output.toFixed(2) : '--'}</td>
+          <td class="num">
+            <div class="ctx-cell">
+              <span>${p.context_length ? (p.context_length / 1000).toFixed(0) + 'k' : '--'}</span>
+              <div class="ctx-bar"><div class="ctx-fill" style="width:${ctxPct}%"></div></div>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function render(list, f) {
+      $('#count').textContent = list.length;
+      if (!list.length) { $('#tbody').innerHTML = '<tr><td colspan="6"><div class="empty-state">No models match your filters</div></td></tr>'; return; }
+
+      $('#tbody').innerHTML = list.map(m => {
+        const id = m.id.replace(/[\/\.]/g, '-');
+        const ctxPct = Math.min(100, (m.context_length / maxCtx) * 100);
+        const vision = m.modality.includes('image');
+        const allP = m.provider_details || [];
+        const filtP = filterProv(allP, f);
+        const pc = filtP.length;
+        const best = filtP.reduce((b, p) => (p.throughput || 0) > (b?.throughput || 0) ? p : b, null);
+        const expandable = pc > 1;
+        let hint = '';
+        if (expandable) hint = `${pc} providers`;
+        else if (pc === 1 && best) hint = `via ${best.name}`;
+
+        return `
+          <tr class="model-row${expandable ? '' : ' no-expand'}" data-id="${id}" onclick="${expandable ? `toggle('${id}',event)` : ''}">
+            <td>
+              <div class="model-info">
+                <div class="model-name-row">
+                  ${expandable ? '<span class="expand-icon">▸</span>' : ''}
+                  <a class="model-id" href="https://openrouter.ai/models/${m.id}" target="_blank" onclick="event.stopPropagation()">${m.id}</a>
+                  ${vision ? '<span class="tag">Vision</span>' : ''}
+                </div>
+                ${hint ? `<div class="provider-hint">${hint}</div>` : ''}
+              </div>
+            </td>
+            <td class="num"><span class="metric ${mc('tp', m.throughput)}">${m.throughput > 0 ? m.throughput.toFixed(1) : '--'}</span></td>
+            <td class="num"><span class="metric ${mc('lat', m.latency)}">${m.latency ? m.latency.toFixed(0) + 'ms' : '--'}</span></td>
+            <td class="num hide-mobile">${m.price_input != null ? '$' + m.price_input.toFixed(2) : '--'}</td>
+            <td class="num hide-mobile">${m.price_output != null ? '$' + m.price_output.toFixed(2) : '--'}</td>
+            <td class="num">
+              <div class="ctx-cell">
+                <span>${m.context_length ? (m.context_length / 1000).toFixed(0) + 'k' : '--'}</span>
+                <div class="ctx-bar"><div class="ctx-fill" style="width:${ctxPct}%"></div></div>
+              </div>
+            </td>
+          </tr>
+          ${expandable ? `<tbody class="provider-group" id="p-${id}">${renderProv(m, f)}</tbody>` : ''}
+        `;
+      }).join('');
+    }
+
+    function clearAll() {
+      $('#search').value = '';
+      $('#f-tp').value = '';
+      $('#f-lat').value = '';
+      $('#f-in').value = '';
+      $('#f-out').value = '';
+      $('#f-ctx').value = '';
+      $('#f-prov').value = '';
+      $('#t-free').classList.remove('active');
+      $('#t-vision').classList.remove('active');
+      $$('.nav-btn').forEach(n => n.classList.remove('active'));
+      $('.nav-btn[data-preset="all"]').classList.add('active');
+      filter();
+    }
+
+    function preset(p) {
+      clearAll();
+      $$('.nav-btn').forEach(n => n.classList.remove('active'));
+      $(`.nav-btn[data-preset="${p}"]`).classList.add('active');
+      switch(p) {
+        case 'fast': $('#f-tp').value = '200'; break;
+        case 'cheap': $('#f-in').value = '1'; $('#f-out').value = '1'; break;
+        case 'free': $('#t-free').classList.add('active'); break;
+        case 'vision': $('#t-vision').classList.add('active'); break;
+        case 'longctx': $('#f-ctx').value = '100'; break;
+        case 'lowlat': $('#f-lat').value = '200'; break;
+      }
+      filter();
+    }
+
+    // Events
+    let db;
+    $$('.filter-chip input, .filter-chip select').forEach(el => {
+      el.addEventListener('input', () => { clearTimeout(db); db = setTimeout(filter, 80); });
+    });
+    $('#t-free').onclick = function() { this.classList.toggle('active'); filter(); };
+    $('#t-vision').onclick = function() { this.classList.toggle('active'); filter(); };
+    $('#clear').onclick = clearAll;
+    $$('.sort-pill').forEach(t => {
+      t.onclick = () => {
+        $$('.sort-pill').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        sort = t.dataset.sort;
+        sortAsc = t.dataset.asc === '1';
+        filter();
+      };
+    });
+    $$('.nav-btn[data-preset]').forEach(n => { n.onclick = () => preset(n.dataset.preset); });
+    document.addEventListener('keydown', e => {
+      if (e.key === '/' && !e.target.matches('input, textarea, select')) { e.preventDefault(); $('#search').focus(); }
+      if (e.key === 'Escape') clearAll();
+    });
+
+    load();
+  </script>
+</body>
+</html>
