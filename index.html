@@ -757,7 +757,7 @@
 
     // Events
     let db;
-    $$('.filter-chip input, .filter-chip select').forEach(el => {
+    $$('.search-box input, .filter-chip input, .filter-chip select').forEach(el => {
       el.addEventListener('input', () => { clearTimeout(db); db = setTimeout(filter, 80); });
     });
     $('#t-free').onclick = function() { this.classList.toggle('active'); filter(); };
