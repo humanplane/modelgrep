@@ -486,6 +486,15 @@ class APIHandler(SimpleHTTPRequestHandler):
             self.serve_html()
         elif parsed.path == "/media" or parsed.path == "/media/":
             self.serve_html("fal.html")
+        elif parsed.path == "/blog" or parsed.path == "/blog/":
+            self.serve_html("blog.html")
+        elif parsed.path.startswith("/blog/"):
+            # Individual blog posts - serve the same page (SPA-style)
+            self.serve_html("blog.html")
+        elif parsed.path == "/favicon.svg":
+            self.serve_static("favicon.svg", "image/svg+xml")
+        elif parsed.path == "/site.webmanifest":
+            self.serve_static("site.webmanifest", "application/manifest+json")
         else:
             super().do_GET()
 
@@ -710,6 +719,23 @@ class APIHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(content)
             except BrokenPipeError:
                 pass  # Client disconnected
+        else:
+            self.send_error(404)
+
+    def serve_static(self, filename, content_type):
+        file_path = os.path.join(os.path.dirname(__file__), filename)
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as f:
+                content = f.read()
+            try:
+                self.send_response(200)
+                self.send_header("Content-Type", content_type)
+                self.send_header("Content-Length", str(len(content)))
+                self.send_header("Cache-Control", "public, max-age=86400")
+                self.end_headers()
+                self.wfile.write(content)
+            except BrokenPipeError:
+                pass
         else:
             self.send_error(404)
 

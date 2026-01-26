@@ -3,31 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>modelgrep - Compare LLM Models by Speed, Latency & Price</title>
-  <meta name="description" content="Find the perfect LLM for your project. Compare throughput, latency, and pricing across 300+ models from 50+ providers including OpenAI, Anthropic, Google, and more.">
-  <meta name="keywords" content="LLM, AI models, GPT, Claude, Gemini, model comparison, API pricing, throughput, latency, OpenRouter">
+  <title>modelgrep - Compare AI Models by Speed, Latency & Price</title>
+  <meta name="description" content="Compare AI models by speed, latency, and price. Real-time benchmarks for LLMs and media models including GPT, Claude, Gemini, Llama, Stable Diffusion, Flux & more.">
+  <meta name="keywords" content="AI model comparison, LLM benchmark, AI pricing, fastest LLM, cheapest AI API, image generation models, GPT vs Claude, AI model latency, LLM for coding">
   <meta name="author" content="modelgrep">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="modelgrep - Compare LLM Models">
-  <meta property="og:description" content="Find the perfect LLM. Compare throughput, latency, and pricing across 300+ models.">
+  <meta property="og:title" content="modelgrep - Compare AI Models by Speed & Price">
+  <meta property="og:description" content="Real-time benchmarks for LLMs and media models. Compare GPT, Claude, Gemini, Llama, Stable Diffusion, Flux & more.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://modelgrep.com">
   <meta property="og:image" content="https://modelgrep.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="modelgrep">
+  <meta property="og:locale" content="en_US">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="modelgrep - Compare LLM Models">
-  <meta name="twitter:description" content="Find the perfect LLM. Compare throughput, latency, and pricing across 300+ models.">
+  <meta name="twitter:site" content="@modelgrep">
+  <meta name="twitter:title" content="modelgrep - Compare AI Models">
+  <meta name="twitter:description" content="Real-time speed & pricing benchmarks for LLMs and media models. GPT, Claude, Gemini, Stable Diffusion & more.">
+  <meta name="twitter:image" content="https://modelgrep.com/og-image.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c3aed'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>M</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c3aed'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold'>M</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#7c3aed">
+  <meta name="msapplication-TileColor" content="#7c3aed">
 
   <!-- Canonical -->
   <link rel="canonical" href="https://modelgrep.com">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "modelgrep",
+    "description": "Compare 300+ LLM models by speed, latency, and price",
+    "url": "https://modelgrep.com",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "modelgrep"
+    }
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -39,6 +71,31 @@
       background: #0a0a0b;
       color: #e4e4e7;
       min-height: 100vh;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+
+    /* Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #27272a transparent;
     }
 
     .layout {
@@ -158,20 +215,51 @@
       background: #18181b;
       border: 1px solid #27272a;
       border-radius: 8px;
-      padding: 0 12px 0 38px;
+      padding: 0 40px 0 38px;
       font-size: 14px;
       color: #e4e4e7;
       outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
-    .search-input:focus { border-color: #3f3f46; }
+    .search-input:focus {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 3px #7c3aed15;
+    }
     .search-input::placeholder { color: #52525b; }
+
+    .search-hint {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: #3f3f46;
+      pointer-events: none;
+      font-family: 'JetBrains Mono', monospace;
+      background: #27272a;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .search-input:focus + .search-hint { display: none; }
 
     .filters {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
+    }
+
+    .filter-divider {
+      width: 1px;
+      height: 20px;
+      background: #27272a;
+      margin: 0 4px;
+    }
+
+    @media (max-width: 768px) {
+      .filter-divider { display: none; }
     }
 
     .filter-chip {
@@ -185,7 +273,11 @@
       border-radius: 6px;
       font-size: 12px;
       color: #a1a1aa;
+      transition: border-color 0.15s, background 0.15s;
     }
+
+    .filter-chip:hover { border-color: #3f3f46; }
+    .filter-chip:focus-within { border-color: #7c3aed; background: #7c3aed08; }
 
     .filter-chip input {
       width: 45px;
@@ -198,6 +290,8 @@
     }
 
     .filter-chip input::placeholder { color: #52525b; }
+    .filter-chip.has-value { border-color: #7c3aed; background: #7c3aed10; }
+    .filter-chip.has-value input { color: #a78bfa; }
 
     .filter-chip select {
       background: none;
@@ -267,9 +361,10 @@
       font-size: 12px;
       color: #71717a;
       cursor: pointer;
+      transition: all 0.15s;
     }
 
-    .sort-pill:hover { color: #a1a1aa; }
+    .sort-pill:hover { color: #a1a1aa; background: #27272a50; }
     .sort-pill.active { background: #27272a; color: #e4e4e7; }
 
     /* Table */
@@ -278,9 +373,18 @@
       border: 1px solid #1f1f23;
       border-radius: 10px;
       overflow: hidden;
+      max-height: calc(100vh - 220px);
+      overflow-y: auto;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
     }
 
     table { width: 100%; border-collapse: collapse; }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
     th {
       padding: 10px 14px;
@@ -297,7 +401,7 @@
     th.num { text-align: right; }
 
     td {
-      padding: 10px 14px;
+      padding: 14px 16px;
       font-size: 13px;
       border-bottom: 1px solid #1a1a1d;
     }
@@ -310,8 +414,8 @@
 
     tr:last-child td { border-bottom: none; }
 
-    .model-row { cursor: pointer; transition: background 0.1s; }
-    .model-row:hover { background: #151517; }
+    .model-row { cursor: pointer; transition: background 0.15s; }
+    .model-row:hover { background: #18181b; }
     .model-row.expanded { background: #151517; }
     .model-row.no-expand { cursor: default; }
 
@@ -340,6 +444,19 @@
 
     .model-id:hover { color: #a78bfa; }
 
+    /* Description - hidden by default, shown on hover */
+    .model-desc {
+      font-size: 11px;
+      color: #71717a;
+      margin-top: 4px;
+      line-height: 1.4;
+      display: none;
+      max-width: 400px;
+    }
+
+    .model-row:hover .model-desc,
+    .model-row.expanded .model-desc { display: block; }
+
     .tag {
       font-size: 9px;
       font-weight: 600;
@@ -351,9 +468,13 @@
     }
 
     .provider-hint {
-      font-size: 11px;
-      color: #52525b;
+      font-size: 10px;
+      color: #3f3f46;
+      margin-left: 8px;
+      display: inline;
     }
+
+    .model-row:hover .provider-hint { color: #52525b; }
 
     .metric { font-weight: 500; }
     .metric.fast { color: #22c55e; }
@@ -369,13 +490,18 @@
       gap: 8px;
     }
 
+    /* Context bar - only show on hover for visual interest */
     .ctx-bar {
       width: 30px;
       height: 4px;
       background: #27272a;
       border-radius: 2px;
       overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.15s;
     }
+
+    .model-row:hover .ctx-bar { opacity: 1; }
 
     .ctx-fill { height: 100%; background: #7c3aed; border-radius: 2px; }
 
@@ -408,6 +534,16 @@
       background: #eab30820;
       color: #eab308;
     }
+
+    .uptime {
+      font-size: 9px;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    .uptime.good { background: #22c55e20; color: #22c55e; }
+    .uptime.ok { background: #eab30820; color: #eab308; }
+    .uptime.bad { background: #ef444420; color: #ef4444; }
 
     /* Empty/Loading */
     .empty-state {
@@ -446,15 +582,208 @@
 
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
+    /* Mobile Header */
+    .mobile-header {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #0f0f11;
+      border-bottom: 1px solid #1f1f23;
+      padding: 12px 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mobile-header .logo {
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: #a1a1aa;
+      padding: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-btn:hover { color: #e4e4e7; }
+
+    /* Mobile Menu Overlay */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-menu-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 100%;
+      background: #0f0f11;
+      padding: 20px 16px;
+      transform: translateX(-100%);
+      transition: transform 0.2s ease-out;
+      overflow-y: auto;
+    }
+
+    .mobile-menu.open .mobile-menu-content {
+      transform: translateX(0);
+    }
+
+    .mobile-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #71717a;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .close-btn:hover { color: #e4e4e7; }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .sidebar { width: 180px; padding: 16px 10px; }
+      .main { margin-left: 180px; padding: 20px; }
+      .nav-btn { font-size: 12px; padding: 7px 8px; }
+      .filter-chip { padding: 0 8px; }
+      .filter-chip input { width: 40px; }
+    }
+
     /* Mobile */
     @media (max-width: 768px) {
       .sidebar { display: none; }
-      .main { margin-left: 0; padding: 16px; }
+      .mobile-header { display: flex; }
+      .mobile-menu { display: block; }
+      .main { margin-left: 0; padding: 12px; }
       .hide-mobile { display: none; }
+
+      .header { margin-bottom: 12px; }
+      .search-input { height: 44px; font-size: 16px; }
+
+      .filters {
+        gap: 6px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .filter-chip {
+        flex-shrink: 0;
+        height: 36px;
+        font-size: 11px;
+      }
+
+      .filter-chip input { width: 36px; font-size: 11px; }
+
+      .toggle-btn {
+        flex-shrink: 0;
+        height: 36px;
+        font-size: 11px;
+        padding: 0 10px;
+      }
+
+      .clear-btn {
+        flex-shrink: 0;
+        height: 36px;
+        font-size: 11px;
+      }
+
+      .results-bar { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .sort-pills { width: 100%; justify-content: space-between; }
+      .sort-pill { flex: 1; text-align: center; font-size: 11px; padding: 6px 4px; }
+
+      .table-wrap { border-radius: 8px; }
+      th, td { padding: 8px 10px; font-size: 12px; }
+      td.num { font-size: 11px; }
+
+      .model-id { font-size: 11px; word-break: break-word; }
+      .provider-hint { font-size: 10px; }
+      .tag { font-size: 8px; padding: 1px 4px; }
+
+      .ctx-bar { width: 24px; }
+    }
+
+    /* Small phones */
+    @media (max-width: 380px) {
+      .main { padding: 10px; }
+      .filter-chip span:first-child { display: none; }
+      .filter-chip input { width: 32px; }
+      th, td { padding: 6px 8px; }
+      .sort-pill { font-size: 10px; padding: 5px 2px; }
     }
   </style>
 </head>
 <body>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <div class="logo">modelgrep</div>
+    <button class="menu-btn" id="menu-open" aria-label="Open menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12h18M3 6h18M3 18h18"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-header">
+        <div class="logo">modelgrep</div>
+        <button class="close-btn" id="menu-close" aria-label="Close menu">&times;</button>
+      </div>
+      <nav class="nav-section">
+        <div class="nav-label">Quick Filters</div>
+        <button class="nav-btn mobile-nav active" data-preset="all">All Models</button>
+        <button class="nav-btn mobile-nav" data-preset="fast">Fastest <span class="nav-badge">>200 t/s</span></button>
+        <button class="nav-btn mobile-nav" data-preset="lowlat">Low Latency <span class="nav-badge">&lt;200ms</span></button>
+        <button class="nav-btn mobile-nav" data-preset="cheap">Budget <span class="nav-badge">&lt;$1/M</span></button>
+        <button class="nav-btn mobile-nav" data-preset="free">Free Tier</button>
+        <button class="nav-btn mobile-nav" data-preset="vision">Vision</button>
+        <button class="nav-btn mobile-nav" data-preset="longctx">Long Context <span class="nav-badge">>128k</span></button>
+        <button class="nav-btn mobile-nav" data-preset="coding">Coding <span class="nav-badge">top picks</span></button>
+      </nav>
+      <nav class="nav-section">
+        <div class="nav-label">More</div>
+        <a href="/media" class="nav-btn" style="text-decoration:none;">Media Models <span class="nav-badge">img/vid</span></a>
+        <a href="/blog" class="nav-btn" style="text-decoration:none;">Blog <span class="nav-badge">guides</span></a>
+      </nav>
+      <div class="sidebar-stats" style="margin-top:20px;">
+        <div class="stat-row"><span>Models</span><span id="stat-models-mobile">--</span></div>
+        <div class="stat-row"><span>Providers</span><span id="stat-providers-mobile">--</span></div>
+        <div class="stat-row"><span>Live metrics</span><span id="stat-live-mobile">--</span></div>
+      </div>
+    </div>
+  </div>
+
   <div class="layout">
     <aside class="sidebar">
       <div class="logo">modelgrep</div>
@@ -472,8 +801,9 @@
       </nav>
 
       <nav class="nav-section">
-        <div class="nav-label">Other APIs</div>
+        <div class="nav-label">More</div>
         <a href="/media" class="nav-btn" style="text-decoration:none;">Media Models <span class="nav-badge">img/vid</span></a>
+        <a href="/blog" class="nav-btn" style="text-decoration:none;">Blog <span class="nav-badge">guides</span></a>
       </nav>
 
       <div class="sidebar-stats">
@@ -489,7 +819,8 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
-          <input type="text" class="search-input" id="search" placeholder="Search models... (press /)">
+          <input type="text" class="search-input" id="search" placeholder="Search models...">
+          <span class="search-hint hide-mobile">/</span>
         </div>
         <div class="filters">
           <div class="filter-chip">
@@ -502,6 +833,7 @@
             <input type="number" id="f-lat" placeholder="max">
             <span>ms</span>
           </div>
+          <div class="filter-divider"></div>
           <div class="filter-chip">
             <span>Input</span>
             <input type="number" id="f-in" placeholder="max" step="0.1">
@@ -512,6 +844,7 @@
             <input type="number" id="f-out" placeholder="max" step="0.1">
             <span>$/M</span>
           </div>
+          <div class="filter-divider"></div>
           <div class="filter-chip">
             <span>Context</span>
             <input type="number" id="f-ctx" placeholder="min">
@@ -519,6 +852,7 @@
           </div>
           <button class="toggle-btn" id="t-free">Free</button>
           <button class="toggle-btn" id="t-vision">Vision</button>
+          <div class="filter-divider"></div>
           <div class="filter-chip">
             <span>Provider</span>
             <select id="f-prov"><option value="">All</option></select>
@@ -579,9 +913,16 @@
         }
 
         models = md.models; maxCtx = sd.max_context || 200000;
-        $('#stat-models').textContent = sd.total_models;
-        $('#stat-providers').textContent = sd.providers?.length || 0;
-        $('#stat-live').textContent = sd.with_throughput;
+        const modelCount = sd.total_models;
+        const providerCount = sd.providers?.length || 0;
+        const liveCount = sd.with_throughput;
+        $('#stat-models').textContent = modelCount;
+        $('#stat-providers').textContent = providerCount;
+        $('#stat-live').textContent = liveCount;
+        // Mobile stats
+        if ($('#stat-models-mobile')) $('#stat-models-mobile').textContent = modelCount;
+        if ($('#stat-providers-mobile')) $('#stat-providers-mobile').textContent = providerCount;
+        if ($('#stat-live-mobile')) $('#stat-live-mobile').textContent = liveCount;
         const sel = $('#f-prov');
         (sd.providers || []).sort().forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
         filter();
@@ -658,13 +999,21 @@
       if (row && prov) { row.classList.toggle('expanded'); prov.classList.toggle('show'); }
     }
 
+    function uptimeClass(u) {
+      if (u == null) return '';
+      if (u >= 99) return 'good';
+      if (u >= 95) return 'ok';
+      return 'bad';
+    }
+
     function renderProv(m, f) {
       const list = filterProv(m.provider_details || [], f);
       return list.map(p => {
         const q = p.quantization, showQ = q && q !== 'unknown' && q !== 'bf16' && q !== 'fp16' && q !== 'fp32';
         const ctxPct = Math.min(100, (p.context_length / maxCtx) * 100);
+        const uptimeHtml = p.uptime != null ? `<span class="uptime ${uptimeClass(p.uptime)}">${p.uptime.toFixed(0)}%</span>` : '';
         return `<tr class="prov-row">
-          <td><div class="prov-name"><span class="prov-label">${p.name}</span>${showQ ? `<span class="quant">${q}</span>` : ''}</div></td>
+          <td><div class="prov-name"><span class="prov-label">${p.name}</span>${showQ ? `<span class="quant">${q}</span>` : ''}${uptimeHtml}</div></td>
           <td class="num"><span class="metric ${mc('tp', p.throughput)}">${p.throughput > 0 ? p.throughput.toFixed(1) : '--'}</span></td>
           <td class="num"><span class="metric ${mc('lat', p.latency)}">${p.latency ? p.latency.toFixed(0) + 'ms' : '--'}</span></td>
           <td class="num hide-mobile">${p.price_input != null ? '$' + p.price_input.toFixed(2) : '--'}</td>
@@ -696,6 +1045,8 @@
         if (expandable) hint = `${pc} providers`;
         else if (pc === 1 && best) hint = `via ${best.name}`;
 
+        const desc = m.description ? m.description.replace(/"/g, '&quot;') : '';
+
         return `
           <tr class="model-row${expandable ? '' : ' no-expand'}" data-id="${id}" onclick="${expandable ? `toggle('${id}',event)` : ''}">
             <td>
@@ -704,8 +1055,9 @@
                   ${expandable ? '<span class="expand-icon">▸</span>' : ''}
                   <a class="model-id" href="https://openrouter.ai/models/${m.id}" target="_blank" onclick="event.stopPropagation()">${m.id}</a>
                   ${vision ? '<span class="tag">Vision</span>' : ''}
+                  ${hint ? `<span class="provider-hint">· ${hint}</span>` : ''}
                 </div>
-                ${hint ? `<div class="provider-hint">${hint}</div>` : ''}
+                ${desc ? `<div class="model-desc">${desc}</div>` : ''}
               </div>
             </td>
             <td class="num"><span class="metric ${mc('tp', m.throughput)}">${m.throughput > 0 ? m.throughput.toFixed(1) : '--'}</span></td>
@@ -736,6 +1088,9 @@
       $('#t-vision').classList.remove('active');
       $$('.nav-btn').forEach(n => n.classList.remove('active'));
       $('.nav-btn[data-preset="all"]').classList.add('active');
+      $$('.mobile-nav').forEach(n => n.classList.remove('active'));
+      $('.mobile-nav[data-preset="all"]')?.classList.add('active');
+      updateFilterStyles();
       filter();
     }
 
@@ -750,15 +1105,28 @@
         case 'vision': $('#t-vision').classList.add('active'); break;
         case 'longctx': $('#f-ctx').value = '128'; break;
         case 'lowlat': $('#f-lat').value = '200'; break;
-        case 'coding': $('#search').value = 'sonnet opus gpt-4o deepseek-v3 qwen-2.5 coder gemini-2'; break;
+        case 'coding': $('#search').value = 'code'; break;
       }
       filter();
+    }
+
+    // Update filter chip styles based on value
+    function updateFilterStyles() {
+      $$('.filter-chip').forEach(chip => {
+        const input = chip.querySelector('input');
+        const select = chip.querySelector('select');
+        const hasValue = (input && input.value) || (select && select.value);
+        chip.classList.toggle('has-value', !!hasValue);
+      });
     }
 
     // Events
     let db;
     $$('.search-box input, .filter-chip input, .filter-chip select').forEach(el => {
-      el.addEventListener('input', () => { clearTimeout(db); db = setTimeout(filter, 80); });
+      el.addEventListener('input', () => {
+        clearTimeout(db);
+        db = setTimeout(() => { updateFilterStyles(); filter(); }, 80);
+      });
     });
     $('#t-free').onclick = function() { this.classList.toggle('active'); filter(); };
     $('#t-vision').onclick = function() { this.classList.toggle('active'); filter(); };
@@ -775,7 +1143,30 @@
     $$('.nav-btn[data-preset]').forEach(n => { n.onclick = () => preset(n.dataset.preset); });
     document.addEventListener('keydown', e => {
       if (e.key === '/' && !e.target.matches('input, textarea, select')) { e.preventDefault(); $('#search').focus(); }
-      if (e.key === 'Escape') clearAll();
+      if (e.key === 'Escape') { clearAll(); closeMobileMenu(); }
+    });
+
+    // Mobile menu
+    const mobileMenu = $('#mobile-menu');
+    function openMobileMenu() { mobileMenu.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeMobileMenu() { mobileMenu.classList.remove('open'); document.body.style.overflow = ''; }
+
+    $('#menu-open').onclick = openMobileMenu;
+    $('#menu-close').onclick = closeMobileMenu;
+    mobileMenu.onclick = (e) => { if (e.target === mobileMenu) closeMobileMenu(); };
+
+    // Mobile nav presets
+    $$('.mobile-nav[data-preset]').forEach(n => {
+      n.onclick = () => {
+        $$('.mobile-nav').forEach(x => x.classList.remove('active'));
+        n.classList.add('active');
+        // Also sync desktop nav
+        $$('.sidebar .nav-btn').forEach(x => x.classList.remove('active'));
+        const desktopBtn = $(`.sidebar .nav-btn[data-preset="${n.dataset.preset}"]`);
+        if (desktopBtn) desktopBtn.classList.add('active');
+        preset(n.dataset.preset);
+        closeMobileMenu();
+      };
     });
 
     load();

@@ -1,0 +1,16 @@
+{
+  "name": "modelgrep",
+  "short_name": "modelgrep",
+  "description": "Compare AI models by speed, latency & price",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0b",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

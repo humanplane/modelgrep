@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - modelgrep | AI Model Guides & Comparisons</title>
+  <meta name="description" content="Guides and insights on choosing, comparing, and using AI models. Learn about LLM pricing, performance, and best practices.">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="modelgrep Blog - AI Model Guides">
+  <meta property="og:description" content="Guides and insights on choosing, comparing, and using AI models.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://modelgrep.com/blog">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://modelgrep.com/blog">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0b;
+      color: #e4e4e7;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+    .header {
+      border-bottom: 1px solid #1f1f23;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: #0a0a0b;
+      z-index: 50;
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .nav a {
+      color: #a1a1aa;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.15s;
+    }
+
+    .nav a:hover { color: #e4e4e7; }
+    .nav a.active { color: #a78bfa; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      color: #71717a;
+      font-size: 16px;
+      margin-bottom: 48px;
+    }
+
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .post-card {
+      background: #111113;
+      border: 1px solid #1f1f23;
+      border-radius: 12px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .post-card:hover {
+      border-color: #7c3aed;
+      transform: translateY(-2px);
+    }
+
+    .post-meta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .post-tag {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #7c3aed20;
+      color: #a78bfa;
+    }
+
+    .post-date {
+      font-size: 12px;
+      color: #52525b;
+    }
+
+    .post-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #e4e4e7;
+    }
+
+    .post-excerpt {
+      color: #a1a1aa;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .post-read {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #7c3aed;
+      font-weight: 500;
+    }
+
+    /* Article page styles */
+    .article {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .article-header {
+      margin-bottom: 32px;
+    }
+
+    .article h1 {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .article-meta {
+      display: flex;
+      gap: 16px;
+      color: #71717a;
+      font-size: 14px;
+    }
+
+    .article-content {
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .article-content h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 32px 0 16px;
+      color: #e4e4e7;
+    }
+
+    .article-content h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      color: #e4e4e7;
+    }
+
+    .article-content p {
+      margin-bottom: 16px;
+      color: #a1a1aa;
+    }
+
+    .article-content ul, .article-content ol {
+      margin: 16px 0;
+      padding-left: 24px;
+      color: #a1a1aa;
+    }
+
+    .article-content li {
+      margin-bottom: 8px;
+    }
+
+    .article-content strong {
+      color: #e4e4e7;
+    }
+
+    .article-content a {
+      color: #a78bfa;
+      text-decoration: none;
+    }
+
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+
+    .article-content code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #18181b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .article-content blockquote {
+      border-left: 3px solid #7c3aed;
+      padding-left: 16px;
+      margin: 24px 0;
+      color: #71717a;
+      font-style: italic;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, #7c3aed20, #7c3aed10);
+      border: 1px solid #7c3aed40;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 32px 0;
+      text-align: center;
+    }
+
+    .cta-box h3 {
+      margin: 0 0 8px;
+      color: #e4e4e7;
+    }
+
+    .cta-box p {
+      margin: 0 0 16px;
+      color: #a1a1aa;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: #7c3aed;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .cta-btn:hover { background: #6d28d9; }
+
+    @media (max-width: 768px) {
+      .header { padding: 12px 16px; }
+      .nav { gap: 16px; }
+      .nav a { font-size: 13px; }
+      .container { padding: 32px 16px; }
+      .page-title { font-size: 24px; }
+      .post-card { padding: 20px; }
+      .post-title { font-size: 18px; }
+      .article { padding: 32px 16px; }
+      .article h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="/" class="logo">modelgrep</a>
+    <nav class="nav">
+      <a href="/">Models</a>
+      <a href="/media">Media</a>
+      <a href="/blog" class="active">Blog</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1 class="page-title">Blog</h1>
+    <p class="page-subtitle">Guides and insights on choosing and using AI models</p>
+
+    <div class="posts">
+      <a href="/blog/how-to-choose-llm" class="post-card">
+        <div class="post-meta">
+          <span class="post-tag">Guide</span>
+          <span class="post-date">Updated regularly</span>
+        </div>
+        <h2 class="post-title">How to Choose the Right LLM for Your Project</h2>
+        <p class="post-excerpt">A practical framework for evaluating LLMs based on your specific needs: speed requirements, budget constraints, accuracy demands, and use case fit.</p>
+        <span class="post-read">Read more &rarr;</span>
+      </a>
+
+      <a href="/blog/llm-pricing-explained" class="post-card">
+        <div class="post-meta">
+          <span class="post-tag">Deep Dive</span>
+          <span class="post-date">Updated regularly</span>
+        </div>
+        <h2 class="post-title">LLM Pricing Explained: Understanding Token Costs</h2>
+        <p class="post-excerpt">Learn how LLM pricing works, what input vs output tokens mean, and how to estimate costs for your application. Includes tips for reducing API costs.</p>
+        <span class="post-read">Read more &rarr;</span>
+      </a>
+
+      <a href="/blog/llms-for-coding" class="post-card">
+        <div class="post-meta">
+          <span class="post-tag">Comparison</span>
+          <span class="post-date">Updated regularly</span>
+        </div>
+        <h2 class="post-title">LLMs for Coding: What Makes a Good Code Model</h2>
+        <p class="post-excerpt">Not all LLMs are created equal for code. Learn what factors matter most for code generation, debugging, and refactoring tasks.</p>
+        <span class="post-read">Read more &rarr;</span>
+      </a>
+
+      <a href="/blog/speed-vs-cost" class="post-card">
+        <div class="post-meta">
+          <span class="post-tag">Strategy</span>
+          <span class="post-date">Updated regularly</span>
+        </div>
+        <h2 class="post-title">LLM Speed vs Cost: Finding the Right Balance</h2>
+        <p class="post-excerpt">Faster models often cost more. Learn how to balance throughput, latency, and price based on your application's real requirements.</p>
+        <span class="post-read">Read more &rarr;</span>
+      </a>
+
+      <a href="/blog/free-ai-apis" class="post-card">
+        <div class="post-meta">
+          <span class="post-tag">Resource</span>
+          <span class="post-date">Updated regularly</span>
+        </div>
+        <h2 class="post-title">Free AI APIs: What's Available</h2>
+        <p class="post-excerpt">A comprehensive guide to free-tier AI APIs for LLMs and image generation. Perfect for prototyping, learning, or low-volume production use.</p>
+        <span class="post-read">Read more &rarr;</span>
+      </a>
+
+      <a href="/blog/understanding-latency-throughput" class="post-card">
+        <div class="post-meta">
+          <span class="post-tag">Technical</span>
+          <span class="post-date">Updated regularly</span>
+        </div>
+        <h2 class="post-title">Understanding LLM Latency and Throughput</h2>
+        <p class="post-excerpt">What do latency and throughput actually measure? How do they affect user experience? A technical guide to LLM performance metrics.</p>
+        <span class="post-read">Read more &rarr;</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
